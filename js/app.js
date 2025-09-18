@@ -1,19 +1,72 @@
 class CalorieTracker {
     constructor() {
-        this._calorieLimit = 2000;
+        this._calorieLimit = 2200;
         this._totalCalories = 0;
         this._meals = [];
         this._workouts = [];
+
+        this._displayCaloriesLimit();
+        this._displayCaloriesTotal();
+        this._displayCaloriesConsumed();
+        this._displayCaloriesBurned();
+        this._displayCaloriesRemaining();
     }
+
+    // Public methods (API) //
 
     addMeal(meal) {
         this._meals.push(meal);
         this._totalCalories += meal.calories;
+        this._renderStats();
     }
 
     addWorkout(workout) {
         this._workouts.push(workout);
         this._totalCalories -= workout.calories;
+        this._renderStats();
+    }
+
+    // Private methods //
+
+    _displayCaloriesTotal() {
+        const totalCaloriesEl = document.getElementById('calories-total');
+        totalCaloriesEl.innerHTML = this._totalCalories;
+    }
+
+    _displayCaloriesLimit() {
+        const calorieLimitEl = document.getElementById('calories-limit');
+        calorieLimitEl.innerHTML = this._calorieLimit;
+    }
+
+    _displayCaloriesConsumed() {
+        const caloriesConsumedEl = document.getElementById('calories-consumed');
+
+        const consumed = this._meals.reduce((total, meal) => total + meal.calories, 0);
+
+        caloriesConsumedEl.innerHTML = consumed;
+    }
+
+    _displayCaloriesBurned() {
+        const caloriesBurnedEl = document.getElementById('calories-burned');
+
+        const burned = this._workouts.reduce((total, workout) => total + workout.calories, 0);
+
+        caloriesBurnedEl.innerHTML = burned;
+    }
+
+    _displayCaloriesRemaining() {
+        const caloriesRemainingEl = document.getElementById('calories-remaining');
+
+        const remaining = this._calorieLimit - this._totalCalories;
+
+        caloriesRemainingEl.innerHTML = remaining;
+    }
+
+    _renderStats() {
+        this._displayCaloriesTotal();
+        this._displayCaloriesConsumed();
+        this._displayCaloriesBurned();
+        this._displayCaloriesRemaining();
     }
 }
 
@@ -40,3 +93,9 @@ tracker.addMeal(breakfast);
 
 const run = new Workout('Morning run', 300);
 tracker.addWorkout(run);
+
+const lunch = new Meal('Lunch', 350);
+tracker.addMeal(lunch);
+
+const dinner = new Meal('Dinner', 200);
+tracker.addMeal(dinner);
